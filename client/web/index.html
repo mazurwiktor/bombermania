@@ -22,6 +22,7 @@
     <canvas id="canvas" style='position:absolute; left:0px; top:0px; width: 100%'></canvas>
 
     <script>
+        // TODO: Split to submodules
         function gameLoop(update, draw) {
             // Game loop
             let start = null;
@@ -48,7 +49,11 @@
             drawAndUpdate();
         }
 
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
         function gameResources() {
+            // TODO: remove hardcodes from resources
             const res = {
                 player: document.createElement('canvas')
             };
@@ -63,11 +68,9 @@
             return { ...res };
         }
 
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const resources = gameResources();
-
         function gameExports() {
+            const resources = gameResources();
+
             function clearScreen() {
                 ctx.fillStyle = "black";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);

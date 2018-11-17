@@ -8,3 +8,5 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
+euclid = "0.19"
+lazy_static = "1.0"
