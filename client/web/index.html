@@ -23,30 +23,26 @@
 
     <script>
         // TODO: Split to submodules
-        function gameLoop(update, draw) {
+        function gameLoop(update) {
             // Game loop
             let start = null;
             let prevTimestamp = null;
-            const drawAndUpdate = (timestamp) => {
-                // Initialization
+            const updateLoop = (timestamp) => {
                 if (!prevTimestamp) {
                     start = timestamp;
                     prevTimestamp = timestamp;
-                    requestAnimationFrame(drawAndUpdate);
+                    requestAnimationFrame(updateLoop);
                     return;
                 }
 
-                // Update and draw
                 let progress = (timestamp - prevTimestamp) / 1000;
                 update(progress);
-                draw();
 
-                // Some bookkeeping
                 prevTimestamp = timestamp;
-                requestAnimationFrame(drawAndUpdate);
+                requestAnimationFrame(updateLoop);
             };
 
-            drawAndUpdate();
+            updateLoop();
         }
 
         const canvas = document.getElementById('canvas');
@@ -131,10 +127,8 @@
 
             resize();
 
-            gameLoop((timestamp) => {
-                module.update(timestamp)
-            }, () => {
-                module.draw()
+            gameLoop((progress) => {
+                module.update(progress);
             });
         }).catch(e => {
             console.log('Error occured', e);

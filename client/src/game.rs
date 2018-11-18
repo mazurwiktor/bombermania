@@ -35,12 +35,10 @@ impl Game {
     }
 }
 
-pub fn draw() {
+pub fn update(time: f64) {
     call::clear_screen();
     call::draw_player(Point::new(1.0, 1.0));
 }
-
-pub fn update(time: f64) {}
 
 pub fn resize(size: Size) {
     *GAME.lock().unwrap() = Game::new(size);

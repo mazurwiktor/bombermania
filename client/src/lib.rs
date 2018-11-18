@@ -14,11 +14,6 @@ pub extern "C" fn update(time: c_double) {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn draw() {
-    game::draw();
-}
-
-#[no_mangle]
 pub extern "C" fn resize(width: c_double, height: c_double) {
     game::resize(geometry::Size{width, height});
 }
