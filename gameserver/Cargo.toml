@@ -1,0 +1,9 @@
+[package]
+name = "gameserver"
+version = "0.1.0"
+authors = ["radiand <radiand@protonmail.com>"]
+
+[dependencies]
+log = "0.4"
+simplelog = "~0.5.0"
+websocket = "0.21.1"

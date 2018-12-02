@@ -17,6 +17,7 @@ cd client
 
 Build wasm library
 ```bash
+# use `cargo +nightly build (...)` if nightly is not your default
 cargo build --release --target wasm32-unknown-unknown
 ```
 

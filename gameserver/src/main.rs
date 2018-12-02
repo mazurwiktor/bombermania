@@ -13,5 +13,5 @@ fn main() {
         location: Some(Level::Debug),
         time_format: Some("%T%.3f") };
     let _ = TermLogger::init(LevelFilter::Trace, logger_config);
-    info!("server initialized");
+    info!("gameserver initialized");
 }
