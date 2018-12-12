@@ -2,9 +2,8 @@
 extern crate lazy_static;
 
 mod geometry;
-mod game_state;
-mod game;
 mod external;
+mod game;
 
 use std::os::raw::c_double;
 

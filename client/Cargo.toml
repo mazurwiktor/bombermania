@@ -9,4 +9,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 euclid = "0.19"
-lazy_static = "1.0"
+lazy_static = "1.2"

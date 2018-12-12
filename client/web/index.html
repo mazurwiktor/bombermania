@@ -73,13 +73,18 @@
             }
 
             function drawPlayer(x, y) {
-                ctx.drawImage(resources.player, 0, 0);
+                ctx.drawImage(resources.player, x, y);
                 ctx.fillStyle = "black";
             }
 
+            function print(message) {
+                console.log('[DBG]' + message)
+            }
+            console.log(WebAssembly)
             return {
                 clear_screen: clearScreen,
-                draw_player: drawPlayer
+                draw_player: drawPlayer,
+                print: print
             }
         }
 
