@@ -1,5 +1,10 @@
-use super::GameState;
 use super::call;
+use super::GameState;
+use super::{Input, Key};
+
+mod input;
+
+pub use self::input::input_system;
 
 pub fn physics_system(game_state: &mut GameState) {
     for entity in &mut game_state.entities {

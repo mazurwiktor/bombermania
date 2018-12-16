@@ -103,16 +103,16 @@
             function processKey(key, keyState) {
                 switch (key) {
                     case "ArrowLeft":
-                        KEY_STATE === KEY_STATE.DOWN ? module.left_keyup() : module.left_keydown();
+                        keyState === KEY_STATE.DOWN ? module.left_keydown() : module.left_keyup();
                         break;
                     case "ArrowRight":
-                        KEY_STATE === KEY_STATE.DOWN ? module.right_keyup() : module.right_keydown();
+                        keyState === KEY_STATE.DOWN ? module.right_keydown() : module.right_keyup();
                         break;
                     case "ArrowUp":
-                        KEY_STATE === KEY_STATE.DOWN ? module.up_keyup() : module.up_keydown();
+                        keyState === KEY_STATE.DOWN ? module.up_keydown() : module.up_keyup();
                         break;
                     case "ArrowDown":
-                        KEY_STATE === KEY_STATE.DOWN ? module.down_keyup() : module.down_keydown();
+                        keyState === KEY_STATE.DOWN ? module.down_keydown() : module.down_keyup();
                         break;
                     case " ":
                         break;
