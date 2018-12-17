@@ -19,7 +19,17 @@
 </head>
 
 <body>
-    <canvas id="canvas" style='position:absolute; left:0px; top:0px; width: 100%'></canvas>
+    <!-- <div style="left:0px; top:0px; position: absolute;">
+        <p style="color: red" ;> test </p>
+    </div>
+    <canvas id="canvas" style='position: relative; left:0px; top:0px; width: 100%'></canvas> -->
+
+    <div>
+        <canvas id="canvas" style='position: relative; left:0px; top:0px; width: 100%'></canvas>
+        <div id="info" style="position: absolute; z-index: 1; left: 0px; top: 0px; background-color: red;">
+            <p id="fps"></p>
+        </div>
+    </div>
 
     <script>
         // TODO: Split to submodules
@@ -27,6 +37,7 @@
             // Game loop
             let start = null;
             let prevTimestamp = null;
+            let frames = 0
             const updateLoop = (timestamp) => {
                 if (!prevTimestamp) {
                     start = timestamp;
@@ -37,7 +48,15 @@
 
                 let progress = (timestamp - prevTimestamp) / 1000;
                 update(progress);
-
+                
+                if (Number.parseInt(prevTimestamp/ 1000) != Number.parseInt(timestamp / 1000)) {
+                    text = document.getElementById("fps")
+                    text.textContent = "FPS: " + frames;
+                    frames = 0    
+                } else {
+                    frames += 1;
+                }
+                
                 prevTimestamp = timestamp;
                 requestAnimationFrame(updateLoop);
             };
