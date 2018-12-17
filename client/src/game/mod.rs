@@ -36,8 +36,9 @@ lazy_static! {
     }));
 }
 
-pub fn update(_: f64) {
+pub fn update(time_elapsed: f64) {
     let mut state = &mut GAME_STATE.lock().unwrap();
+    state.time_elapsed = time_elapsed;
     system::input_system(&mut state);
     system::physics_system(&mut state);
     system::render_system(&state);
@@ -72,8 +73,4 @@ pub fn key_press(key: Key, key_state: KeyState) {
     } else {
         state.input = Some(input);
     }
-    
-    // let mut hs = HashSet::new();
-    // hs.insert(Key::UpArrow);
-    // state.input = Some(Input {key_pressed: hs});
 }

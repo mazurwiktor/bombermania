@@ -13,6 +13,7 @@ pub struct GameState {
     pub entities: Vec<Option<Entity>>,
     pub player: EntityIndex,
     pub input: Option<Input>,
+    pub time_elapsed: f64
 }
 
 impl GameState {
@@ -23,11 +24,12 @@ impl GameState {
                 physics: Option::from(component::PhysicsComponent {
                     position: Point::new(size.width / 2.0, size.height / 2.0),
                     velocity: Vec2D::new(0.0, 0.0),
-                    speed: 10.0,
+                    speed: 1000.0,
                 }),
             })],
             player: 0,
-            input: None
+            input: None,
+            time_elapsed: 0.0
         }
     }
 }

@@ -7,13 +7,13 @@ pub fn input_system(game_state: &mut GameState) {
     if let Some(input) = &game_state.input {
         if let Some(player) = &mut game_state.entities[game_state.player] {
             if let Some(physics) = &mut player.physics {
-                physics.position += get_velocity(&input) * physics.speed;
+                physics.position += get_velocity(&input, game_state.time_elapsed) * physics.speed;
             }
         }
     }
 }
 
-fn get_velocity(input: &Input) -> Vec2D {
+fn get_velocity(input: &Input, time_elapsed: f64) -> Vec2D {
     let mut velocity = Vec2D::new(0.0, 0.0);
     if input.key_pressed.contains(&Key::UpArrow) {
         velocity += Vec2D::new(0.0, -1.0);
@@ -31,7 +31,7 @@ fn get_velocity(input: &Input) -> Vec2D {
         velocity += Vec2D::new(1.0, 0.0);
     }
 
-    velocity
+    velocity * time_elapsed
 }
 
 #[test]
