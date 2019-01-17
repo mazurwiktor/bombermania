@@ -4,6 +4,9 @@
 extern crate simplelog;
 #[macro_use] extern crate rocket;
 
+extern crate rocket_contrib;
+
+use rocket_contrib::serve::StaticFiles;
 use simplelog::{TermLogger, LevelFilter, Level, Config};
 
 #[get("/")]
@@ -21,5 +24,5 @@ fn main() {
     let _ = TermLogger::init(LevelFilter::Trace, logger_config);
     info!("server initialized");
 
-    rocket::ignite().mount("/", routes![index]).launch();
+    rocket::ignite().mount("/", StaticFiles::from("../client/web/")).launch();
 }
