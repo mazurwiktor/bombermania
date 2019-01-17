@@ -3,7 +3,6 @@ extern crate simplelog;
 
 use simplelog::{TermLogger, LevelFilter, Level, Config};
 
-mod ecs;
 
 fn main() {
     let logger_config = Config {
