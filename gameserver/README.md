@@ -14,7 +14,7 @@ cargo install --features=ssl websocat
 ```
 
 ```bash
-websocat ws://127.0.0.1:20000/
+websocat ws://127.0.0.1:8081/
 ```
 
 
