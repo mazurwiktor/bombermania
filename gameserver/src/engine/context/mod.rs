@@ -47,7 +47,7 @@ impl<'a> Context<'a> {
     /// * chat (?)
     pub fn evt_common(&mut self, evt: &CommonEvent) {
         match evt {
-            CommonEvent::Join(id) => self.add_player(id, 1, 1)
+            CommonEvent::Join(id) => self.add_player(id, 1, 1)  // TODO: "spawn deducer"
         }
     }
 

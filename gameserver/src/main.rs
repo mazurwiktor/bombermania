@@ -28,8 +28,10 @@ use std::fmt::Debug;
 use std::sync::{Arc, RwLock};
 use std::time::{Duration, Instant};
 
-type ContextTx = mpsc::UnboundedSender<String>;
-type ContextRx = mpsc::UnboundedReceiver<String>;
+type CommonEventTx = mpsc::UnboundedSender<engine::context::CommonEvent>;
+type CommonEventRx = mpsc::UnboundedReceiver<engine::context::CommonEvent>;
+type InputEventTx = mpsc::UnboundedSender<engine::context::InputEvent>;
+type InputEventRx = mpsc::UnboundedReceiver<engine::context::InputEvent>;
 
 fn configure_logger() {
     let logger_config = Config {
@@ -44,9 +46,9 @@ fn configure_logger() {
 fn main() {
     configure_logger();
 
-    let mut ctx = engine::context::Context::new();
 
     // --- playground
+    /*
     let fake_id_1 = engine::types::Id::new();
     let fake_id_2 = engine::types::Id::new();
     ctx.evt_common(&engine::context::CommonEvent::Join(fake_id_1));
@@ -56,12 +58,15 @@ fn main() {
     let evt = engine::context::InputEvent{id: fake_id_1, content: fake_keystrokes};
     ctx.evt_input(&evt);
     ctx.evt_input(&evt); // y for player 1 should be now y+=1
+    */
     // --- playground end
-    let (ctx_tx, ctx_rx) = mpsc::unbounded();
-    jump_into_the_loop(ctx_tx, ctx_rx);
+
+    jump_into_the_loop();
 }
 
-fn jump_into_the_loop(ctx_tx: ContextTx, ctx_rx: ContextRx) {
+fn jump_into_the_loop() {
+    let mut ctx = engine::context::Context::new();
+
     let runtime = runtime::Builder::new().build().unwrap();
     let executor = runtime.executor();
     let reactor = runtime.reactor().clone();
@@ -115,7 +120,7 @@ fn jump_into_the_loop(ctx_tx: ContextTx, ctx_rx: ContextRx) {
                 .remove(&id)
                 .expect("Tried to send to invalid client id");
 
-            println!("Sending message '{}' to id {}", msg, id);
+            println!(">>> Sending message '{}' to id {}", msg, id);
             let f = sink
                 .send(OwnedMessage::Text(msg))
                 .and_then(move |sink| {
@@ -169,7 +174,7 @@ fn spawn_future<F, I, E>(f: F, desc: &'static str, executor: &TaskExecutor)
 
 fn handle_rx(id: engine::types::Id, msg: &OwnedMessage) {
     if let OwnedMessage::Text(ref txt) = *msg {
-        println!("Received message '{}' from id {}", txt, id);
+        println!("<<< Received message '{}' from id {}", txt, id);
     }
 }
 
