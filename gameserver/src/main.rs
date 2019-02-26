@@ -49,14 +49,13 @@ fn main() {
     // --- playground
     let fake_id_1 = engine::types::Id::new();
     let fake_id_2 = engine::types::Id::new();
-    ctx.add_player(&fake_id_1, 11, 11);
-    ctx.add_player(&fake_id_2, 22, 22);
+    ctx.evt_common(&engine::context::CommonEvent::Join(fake_id_1));
+    ctx.evt_common(&engine::context::CommonEvent::Join(fake_id_2));
     let mut fake_keystrokes = engine::interface::Input::new();
     fake_keystrokes.up = true;
     let evt = engine::context::InputEvent{id: fake_id_1, content: fake_keystrokes};
-    ctx.event(&evt);
-    ctx.event(&evt); // y for player 1 should be now y+=1
-
+    ctx.evt_input(&evt);
+    ctx.evt_input(&evt); // y for player 1 should be now y+=1
     // --- playground end
     let (ctx_tx, ctx_rx) = mpsc::unbounded();
     jump_into_the_loop(ctx_tx, ctx_rx);

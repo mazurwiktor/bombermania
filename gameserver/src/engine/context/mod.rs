@@ -13,6 +13,10 @@ pub struct InputEvent {
     pub content: interface::Input  // active keystrokes
 }
 
+pub enum CommonEvent {
+    Join(types::Id)
+}
+
 pub struct Context<'a> {
     world: specs::World,
     dispatcher: specs::Dispatcher<'a, 'a>
@@ -36,24 +40,36 @@ impl<'a> Context<'a> {
         Context{world, dispatcher}
     }
 
-    pub fn add_player(&mut self, id: &types::Id, x: u32, y: u32) {
-        self.world.create_entity()
-            .with(components::identity::Identity{ id: id.clone() })
-            .with(components::physics::Position{ x: x, y: y })
-            .build();
-        self.world.maintain();
+    /// Handles events like:
+    /// * join player
+    /// * remove player
+    /// * options (?)
+    /// * chat (?)
+    pub fn evt_common(&mut self, evt: &CommonEvent) {
+        match evt {
+            CommonEvent::Join(id) => self.add_player(id, 1, 1)
+        }
     }
 
-    pub fn event(&mut self, input_evt: &InputEvent) {
+    /// Handles player input (keystrokes) events
+    pub fn evt_input(&mut self, evt: &InputEvent) {
         debug!("evt!");
         // TODO: obviously I need to learn about borrowing system and how to drop borrow.
         {
             let mut input_resource = self.world.write_resource::<resources::input::InputState>();
             // TODO: is it possible to update map without `entry + or_insert` idiom?
-            let entry = input_resource.content.entry(input_evt.id.clone())
+            let entry = input_resource.content.entry(evt.id.clone())
                 .or_insert(interface::Input::new());
-            *entry = input_evt.content.clone();  // TODO: possibly clone can be replaced with smth
+            *entry = evt.content.clone();  // TODO: possibly clone can be replaced with smth
         }
         self.dispatcher.dispatch(&mut self.world.res);
+    }
+
+    fn add_player(&mut self, id: &types::Id, x: u32, y: u32) {
+        self.world.create_entity()
+            .with(components::identity::Identity{ id: id.clone() })
+            .with(components::physics::Position{ x: x, y: y })
+            .build();
+        self.world.maintain();
     }
 }
