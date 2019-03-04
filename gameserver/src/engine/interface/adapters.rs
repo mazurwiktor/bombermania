@@ -1,6 +1,6 @@
 use engine::interface::Input;
 
-// XXX: "make it just work for a while"  implementation!
+// TODO: text interface only for dev purposes
 pub fn str2input(raw_msg: &str) -> Input {
     let mut current = Input::new();
     if raw_msg.contains("w") { current.up = true; }

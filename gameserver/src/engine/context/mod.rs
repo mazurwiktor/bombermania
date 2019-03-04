@@ -13,8 +13,11 @@ pub struct InputEvent {
     pub content: interface::Input  // active keystrokes
 }
 
-pub enum CommonEvent {
-    Join(types::Id)
+pub enum Event {
+    Join(types::Id),
+    Leave(types::Id),
+    Input(InputEvent),
+    Tick
 }
 
 pub struct Context<'a> {
@@ -40,19 +43,16 @@ impl<'a> Context<'a> {
         Context{world, dispatcher}
     }
 
-    /// Handles events like:
-    /// * join player
-    /// * remove player
-    /// * options (?)
-    /// * chat (?)
-    pub fn evt_common(&mut self, evt: &CommonEvent) {
+    pub fn evt(&mut self, evt: &Event) {
         match evt {
-            CommonEvent::Join(id) => self.add_player(id, 1, 1)  // TODO: "spawn deducer"
+            Event::Join(id) => self.add_player(id, 1, 1),  // TODO: spawn coords deducer
+            Event::Leave(id) => info!("lol, {} left", id),
+            Event::Input(ievt) => self.input(ievt),
+            Event::Tick => self.tick()
         }
     }
 
-    /// Handles player input (keystrokes) events
-    pub fn evt_input(&mut self, evt: &InputEvent) {
+    fn input(&mut self, evt: &InputEvent) {
         debug!("evt!");
         // TODO: obviously I need to learn about borrowing system and how to drop borrow.
         {
@@ -62,14 +62,19 @@ impl<'a> Context<'a> {
                 .or_insert(interface::Input::new());
             *entry = evt.content.clone();  // TODO: possibly clone can be replaced with smth
         }
-        self.dispatcher.dispatch(&mut self.world.res);
+        //self.dispatcher.dispatch(&mut self.world.res);
     }
 
     fn add_player(&mut self, id: &types::Id, x: u32, y: u32) {
+        info!("Spawning [{}] on x:{} y:{}", id, &x, &y);
         self.world.create_entity()
             .with(components::identity::Identity{ id: id.clone() })
             .with(components::physics::Position{ x: x, y: y })
             .build();
         self.world.maintain();
+    }
+
+    fn tick(&mut self) {
+        self.dispatcher.dispatch(&mut self.world.res);
     }
 }
