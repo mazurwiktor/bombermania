@@ -8,6 +8,8 @@ use engine::resources;
 use engine::systems;
 use engine::types;
 
+static VELOCITY: f32 = 0.5;  // standard "unboosted" velocity [tiles per second]
+
 pub struct InputEvent {
     pub id: types::Id,  // which player
     pub content: interface::Input  // active keystrokes
@@ -30,6 +32,7 @@ impl<'a> Context<'a> {
         let mut world = specs::World::new();
         world.register::<components::identity::Identity>();
         world.register::<components::physics::Position>();
+        world.register::<components::physics::Velocity>();
 
         world.add_resource(resources::input::InputState::new());
 
@@ -45,7 +48,7 @@ impl<'a> Context<'a> {
 
     pub fn evt(&mut self, evt: &Event) {
         match evt {
-            Event::Join(id) => self.add_player(id, 1, 1),  // TODO: spawn coords deducer
+            Event::Join(id) => self.add_player(id, 1.0, 1.0),  // TODO: spawn coords deducer
             Event::Leave(id) => info!("lol, {} left", id),
             Event::Input(ievt) => self.input(ievt),
             Event::Tick => self.tick()
@@ -53,6 +56,7 @@ impl<'a> Context<'a> {
     }
 
     fn input(&mut self, evt: &InputEvent) {
+        info!("input evt");
         let mut input_resource = self.world.write_resource::<resources::input::InputState>();
         // TODO: is it possible to update map without `entry + or_insert` idiom?
         let entry = input_resource.content.entry(evt.id.clone())
@@ -60,10 +64,11 @@ impl<'a> Context<'a> {
         *entry = evt.content.clone();  // TODO: possibly clone can be replaced with smth
     }
 
-    fn add_player(&mut self, id: &types::Id, x: u32, y: u32) {
+    fn add_player(&mut self, id: &types::Id, x: f32, y: f32) {
         info!("Spawning [{}] on x:{} y:{}", id, &x, &y);
         self.world.create_entity()
             .with(components::identity::Identity{ id: id.clone() })
+            .with(components::physics::Velocity{ x: VELOCITY, y: VELOCITY })
             .with(components::physics::Position{ x: x, y: y })
             .build();
         self.world.maintain();
