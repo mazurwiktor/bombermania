@@ -6,4 +6,5 @@ pub mod systems;
 
 pub mod types {
     pub type Id = snowflake::ProcessUniqueId;
+    pub type Period = std::time::Duration;
 }

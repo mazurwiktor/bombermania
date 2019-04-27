@@ -1,3 +1,4 @@
+#![feature(duration_float)]
 #[macro_use] extern crate log;
 #[macro_use] extern crate specs_derive;
 extern crate simplelog;
@@ -50,9 +51,10 @@ fn main() {
     let tick_evt_tx = evt_tx.clone();
     thread::spawn(move || {
         loop {
+            let now = std::time::Instant::now();
             std::thread::sleep(std::time::Duration::from_millis(TICK));
-            tick_evt_tx.send(engine::context::Event::Tick);
-            println!(">>> TICK <<<");  // TODO there should go compressed data delta for the client
+            tick_evt_tx.send(engine::context::Event::Tick(now.elapsed()));
+            // TODO there should go compressed data delta for the client
         }
     });
 

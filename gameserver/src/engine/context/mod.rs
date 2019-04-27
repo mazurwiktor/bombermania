@@ -8,7 +8,7 @@ use engine::resources;
 use engine::systems;
 use engine::types;
 
-static VELOCITY: f32 = 0.5;  // standard "unboosted" velocity [tiles per second]
+static VELOCITY: f64 = 0.5;  // standard "unboosted" velocity [tiles per second]
 
 pub struct InputEvent {
     pub id: types::Id,  // which player
@@ -19,7 +19,7 @@ pub enum Event {
     Join(types::Id),
     Leave(types::Id),
     Input(InputEvent),
-    Tick
+    Tick(types::Period)
 }
 
 pub struct Context<'a> {
@@ -35,6 +35,7 @@ impl<'a> Context<'a> {
         world.register::<components::physics::Velocity>();
 
         world.add_resource(resources::input::InputState::new());
+        world.add_resource(resources::deltatime::DeltaTime::new());
 
         let mut sys_movement = systems::physics::Movement;
         sys_movement.run_now(&world.res);
@@ -51,7 +52,7 @@ impl<'a> Context<'a> {
             Event::Join(id) => self.add_player(id, 1.0, 1.0),  // TODO: spawn coords deducer
             Event::Leave(id) => info!("lol, {} left", id),
             Event::Input(ievt) => self.input(ievt),
-            Event::Tick => self.tick()
+            Event::Tick(period) => self.tick(period)
         }
     }
 
@@ -64,7 +65,7 @@ impl<'a> Context<'a> {
         *entry = evt.content.clone();  // TODO: possibly clone can be replaced with smth
     }
 
-    fn add_player(&mut self, id: &types::Id, x: f32, y: f32) {
+    fn add_player(&mut self, id: &types::Id, x: f64, y: f64) {
         info!("Spawning [{}] on x:{} y:{}", id, &x, &y);
         self.world.create_entity()
             .with(components::identity::Identity{ id: id.clone() })
@@ -74,7 +75,12 @@ impl<'a> Context<'a> {
         self.world.maintain();
     }
 
-    fn tick(&mut self) {
+    fn tick(&mut self, period: &types::Period) {
+        {
+            let mut deltatime = self.world.write_resource::<resources::deltatime::DeltaTime>();
+            *deltatime = resources::deltatime::DeltaTime::from(period);
+            info!("TICK {:?}", period);
+        }
         self.dispatcher.dispatch(&mut self.world.res);
     }
 }
