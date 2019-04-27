@@ -53,16 +53,11 @@ impl<'a> Context<'a> {
     }
 
     fn input(&mut self, evt: &InputEvent) {
-        debug!("evt!");
-        // TODO: obviously I need to learn about borrowing system and how to drop borrow.
-        {
-            let mut input_resource = self.world.write_resource::<resources::input::InputState>();
-            // TODO: is it possible to update map without `entry + or_insert` idiom?
-            let entry = input_resource.content.entry(evt.id.clone())
-                .or_insert(interface::Input::new());
-            *entry = evt.content.clone();  // TODO: possibly clone can be replaced with smth
-        }
-        //self.dispatcher.dispatch(&mut self.world.res);
+        let mut input_resource = self.world.write_resource::<resources::input::InputState>();
+        // TODO: is it possible to update map without `entry + or_insert` idiom?
+        let entry = input_resource.content.entry(evt.id.clone())
+            .or_insert(interface::Input::new());
+        *entry = evt.content.clone();  // TODO: possibly clone can be replaced with smth
     }
 
     fn add_player(&mut self, id: &types::Id, x: u32, y: u32) {

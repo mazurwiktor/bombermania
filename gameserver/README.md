@@ -14,7 +14,6 @@ cargo install --features=ssl websocat
 ```
 
 ```bash
-websocat ws://127.0.0.1:8081/
+websocat ws://127.0.0.1:8081/  --protocol rust-websocket  # protocol just for dev purpose
 ```
-
 

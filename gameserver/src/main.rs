@@ -19,6 +19,8 @@ use websocket::sync::Server;
 
 mod engine;
 
+static TICK: u64 = 2000;
+
 fn configure_logger() {
     let logger_config = Config {
         time: Some(Level::Error),
@@ -26,7 +28,7 @@ fn configure_logger() {
         target: Some(Level::Debug),
         location: Some(Level::Debug),
         time_format: Some("%T%.3f") };
-    let _ = TermLogger::init(LevelFilter::Debug, logger_config);
+    TermLogger::init(LevelFilter::Debug, logger_config);
 }
 
 fn main() {
@@ -48,9 +50,9 @@ fn main() {
     let tick_evt_tx = evt_tx.clone();
     thread::spawn(move || {
         loop {
-            std::thread::sleep(std::time::Duration::from_millis(2000));
+            std::thread::sleep(std::time::Duration::from_millis(TICK));
             tick_evt_tx.send(engine::context::Event::Tick);
-            println!(">>> TICK <<<");  // TODO there should go delta for the client
+            println!(">>> TICK <<<");  // TODO there should go compressed data delta for the client
         }
     });
 
