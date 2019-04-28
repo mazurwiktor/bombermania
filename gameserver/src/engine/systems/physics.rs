@@ -30,7 +30,11 @@ impl<'a> System<'a> for Movement {
             let opt_ent_is = input_states.content.get(&ent_id.id);
             if let Some(ent_is) = opt_ent_is {
                 info!("└── {:?}", &ent_is);
-                let dt = deltatime.content.as_float_secs();
+
+                // TODO: HACK, as_float_secs() does not compile for whatever reason on rust 1.34
+                //let dt = deltatime.content.as_float_secs();
+                let dt = deltatime.content.as_secs() as f64 +
+                         deltatime.content.subsec_micros() as f64 / 1_000_000.0;
                 // TODO:
                 // 1. cleanup
                 // 2. map boundary check
