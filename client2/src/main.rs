@@ -1,4 +1,4 @@
-extern crate stdweb;
+#[macro_use] extern crate stdweb;
 
 use stdweb::traits::*;
 use stdweb::unstable::TryInto;
@@ -10,9 +10,10 @@ use stdweb::web::{
 };
 
 use stdweb::web::event::{
+    KeyPressEvent,
     MouseMoveEvent,
     ResizeEvent,
-    KeyPressEvent,
+    SocketMessageEvent
 };
 
 use stdweb::web::html_element::CanvasElement;
@@ -32,6 +33,12 @@ fn attach_ws() {
     let ws = WebSocket::new_with_protocols(
         "ws://127.0.0.1:8081", &vec!["rust-websocket"]).unwrap();
 
+    ws.add_event_listener( move |event: SocketMessageEvent| {
+        js! {
+            alert( @{&event.data().into_text().unwrap()} );
+        }
+    });
+
     let text_entry: InputElement = document().query_selector( ".form input" ).unwrap().unwrap().try_into().unwrap();
     text_entry.add_event_listener( enclose!( (text_entry) move |event: KeyPressEvent| {
         if event.key() == "Enter" {
@@ -44,6 +51,7 @@ fn attach_ws() {
             }
         }
     }));
+
 }
 
 fn main() {

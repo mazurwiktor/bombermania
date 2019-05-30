@@ -1,4 +1,5 @@
 pub mod adapters;
+pub mod messages;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Input {

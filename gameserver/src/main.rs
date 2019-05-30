@@ -1,6 +1,7 @@
 #![feature(duration_float)]
 #[macro_use] extern crate log;
 #[macro_use] extern crate specs_derive;
+extern crate serde;
 extern crate simplelog;
 extern crate snowflake;
 extern crate specs;
@@ -73,8 +74,13 @@ fn main() {
             let id = engine::types::Id::new();
             info!("New connection, IP: [{}], ID: [{}]", ip, id);
             client_evt_tx.send(engine::context::Event::Join(id));
-            //let message = OwnedMessage::Text("Hello".to_string());
-            //client.send_message(&message).unwrap();
+
+            let cfg = engine::interface::messages::Configuration{
+                grid_x: 10,
+                grid_y: 10
+            };
+            let message = OwnedMessage::Text(serde_json::to_string(&cfg).unwrap());
+            client.send_message(&message).unwrap();
 
             let (mut receiver, mut sender) = client.split().unwrap();
 
